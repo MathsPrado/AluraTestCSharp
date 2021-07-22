@@ -6,6 +6,38 @@ namespace Alura.LeilaoOnline.Tests
     public class LeilaoTerminaPregao
     {
         [Theory]
+        [InlineData(1200,1250, new double[] { 800, 1150, 1400, 1250 })]
+        public void RetornaValorSuperiorMaisProximaDadoLeilao(double valorDestino, double valorEsperado, double[] ofertas)
+        {
+            //Arranje
+            IModalidadeAvaliacao modalidade = new OfertaSuperiorMaisProxima(valorDestino);
+            var leilao = new Leilao("Van Gogh", modalidade);
+            var fulano = new Interessada("Fulano", leilao);
+            var ciclano = new Interessada("Ciclano", leilao);
+
+
+            leilao.IniciaPregao();
+            for(int i = 0; i < ofertas.Length; i++)
+            {
+                if(i % 2 == 0)
+                {
+                    leilao.RecebeLance(fulano, ofertas[i]);
+                }
+                else
+                {
+                    leilao.RecebeLance(ciclano, ofertas[i]);
+                }
+            }
+
+            //Act
+            leilao.TerminaPregao();
+
+            //Assert
+            Assert.Equal(valorEsperado, leilao.Ganhador.Valor);
+        }
+
+
+        [Theory]
         [InlineData(1200, new double[] { 800, 900, 1000, 1200 })]
         [InlineData(1000, new double[] { 800, 900, 1000, 990 })]
         [InlineData(800, new double[] { 800 })]
@@ -14,7 +46,8 @@ namespace Alura.LeilaoOnline.Tests
             double[] ofertas)
         {
             //Arranje - cenário
-            var leilao = new Leilao("Van Gogh");
+            var modalidade = new MaiorValor();
+            var leilao = new Leilao("Van Gogh", modalidade);
             var fulano = new Interessada("Fulano", leilao);
             leilao.IniciaPregao();
             foreach(var valor in ofertas)
