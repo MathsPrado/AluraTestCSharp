@@ -1,4 +1,5 @@
 ﻿using Alura.LeilaoOnline.Core;
+using Alura.LeilaoOnline.Core.Interfaces;
 using Xunit;
 
 namespace Alura.LeilaoOnline.Tests
@@ -67,7 +68,9 @@ namespace Alura.LeilaoOnline.Tests
         [Fact]
         public void LancaInvalidOperationExceptionDadoPregaoNaoIniciado()
         {
-            var leilao = new Leilao("Van Matheus");
+            //Arranje - cenário
+            var modalidade = new MaiorValor();
+            var leilao = new Leilao("Van Matheus",modalidade);
 
             //Assert
             var exceptionResult = Assert.Throws<System.InvalidOperationException>(() =>
@@ -94,7 +97,8 @@ namespace Alura.LeilaoOnline.Tests
         public void RetornaZeroDadoLeilaoSemLances()
         {
             //Arranje - cenário
-            var leilao = new Leilao("Van Gogh");
+            var modalidade = new MaiorValor();
+            var leilao = new Leilao("Van Gogh",modalidade);
             leilao.IniciaPregao();
 
             //Act - método sob teste
